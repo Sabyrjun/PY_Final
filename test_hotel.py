@@ -5,13 +5,14 @@ from hotel_logic import HotelSystem, Room
 
 class TestHotelSystem(unittest.TestCase):
 
-    # Этот метод запускается перед каждым тестом (создает тестовую базу)
     def setUp(self):
+        # Создаем систему с тестовым файлом
         self.system = HotelSystem("test_data.json")
-        self.system.rooms = []  # Очищаем список для чистоты теста
+        # Принудительно очищаем данные перед каждым тестом
+        self.system.data = {"rooms": [], "guests": [], "bookings": []}
 
-    # Этот метод удаляет тестовую базу после выполнения тестов
     def tearDown(self):
+        # Удаляем тестовый файл после тестов
         if os.path.exists("test_data.json"):
             os.remove("test_data.json")
 
@@ -19,25 +20,29 @@ class TestHotelSystem(unittest.TestCase):
     def test_add_room(self):
         room = Room(101, "Single", 15000.0)
         self.system.add_room(room)
-        self.assertEqual(len(self.system.rooms), 1)
-        self.assertEqual(self.system.rooms[0]["number"], 101)
+        # Проверяем теперь через словарь data
+        self.assertEqual(len(self.system.data["rooms"]), 1)
+        self.assertEqual(self.system.data["rooms"][0]["number"], 101)
 
-    # Тест 2: Проверка поиска свободных комнат
-    def test_get_available(self):
+    # Тест 2: Проверка фильтрации
+    def test_filter_rooms(self):
         self.system.add_room(Room(101, "Single", 15000.0, available=True))
-        self.system.add_room(Room(102, "Double", 20000.0, available=False))
+        self.system.add_room(Room(102, "Double", 20000.0, available=True))
 
-        available = self.system.get_available_rooms()
-        self.assertEqual(len(available), 1)
-        self.assertEqual(available[0]["number"], 101)
+        filtered = self.system.filter_rooms("Single")
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(filtered[0]["number"], 101)
 
     # Тест 3: Проверка успешного бронирования
-    def test_book_room(self):
+    def test_create_booking(self):
         self.system.add_room(Room(200, "Suite", 50000.0, available=True))
-        success = self.system.book_room(200)
+        # Бронируем
+        success = self.system.create_booking(1, 200, 1, 2)
 
-        self.assertTrue(success)  # Бронь должна пройти
-        self.assertFalse(self.system.rooms[0]["available"])  # Статус комнаты должен стать False
+        self.assertTrue(success)  # Должно вернуть цену (True)
+        # Проверяем, что комната стала недоступной
+        room = self.system.find_room(200)
+        self.assertFalse(room["available"])
 
 
 if __name__ == '__main__':
