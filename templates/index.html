@@ -24,7 +24,8 @@
     <input type="number" id="gId" placeholder="Guest ID">
     <input type="text" id="gName" placeholder="Full Name">
     <input type="text" id="gPhone" placeholder="Phone">
-    <button onclick="send('/api/guests', `id=${val('gId')}&name=${val('gName')}&phone=${val('gPhone')}&city=Astana`, 'POST')">Add Guest</button>
+    <input type="text" id="gCity" placeholder="City">
+    <button onclick="send('/api/guests', `id=${val('gId')}&name=${val('gName')}&phone=${val('gPhone')}&city=${val('gCity')}`, 'POST')">Add Guest</button>
 </div>
 
 <div class="card">
