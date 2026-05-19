@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HH KZ Management</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #1a73e8; font-size: 1.2em; margin-top: 0; }
+        input { margin: 5px 0; padding: 8px; width: 90%; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #1a73e8; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; width: 100%; }
+        pre { background: #202124; color: #34a853; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Add Room / Guest</h2>
+    <input type="number" id="rNum" placeholder="Room Number">
+    <input type="text" id="rType" placeholder="Type (single/double)">
+    <input type="number" id="rPrice" placeholder="Price">
+    <button onclick="send('/api/rooms', `number=${val('rNum')}&type=${val('rType')}&price=${val('rPrice')}&available=true`, 'POST')">Add Room</button>
+    <hr>
+    <input type="number" id="gId" placeholder="Guest ID">
+    <input type="text" id="gName" placeholder="Full Name">
+    <input type="text" id="gPhone" placeholder="Phone">
+    <button onclick="send('/api/guests', `id=${val('gId')}&name=${val('gName')}&phone=${val('gPhone')}&city=Astana`, 'POST')">Add Guest</button>
+</div>
+
+<div class="card">
+    <h2>Create Booking</h2>
+    <input type="number" id="bId" placeholder="Booking ID">
+    <input type="number" id="bRNum" placeholder="Room Number">
+    <input type="number" id="bGId" placeholder="Guest ID">
+    <input type="number" id="bNights" placeholder="Nights">
+    <button onclick="send('/api/bookings', `bId=${val('bId')}&roomNum=${val('bRNum')}&guestId=${val('bGId')}&nights=${val('bNights')}`, 'POST')">Book Now</button>
+</div>
+
+<div class="card">
+    <h2>View & Filter</h2>
+    <button onclick="get('/api/rooms/sorted')">5. Sort by Price</button>
+    <input type="text" id="fType" placeholder="Filter by type">
+    <button onclick="get('/api/rooms/filter?type=' + val('fType'))">6. Filter</button>
+    <input type="number" id="sNum" placeholder="Search Room Number">
+    <button onclick="get('/api/rooms/' + val('sNum'))">4. Find</button>
+</div>
+
+<div class="card">
+    <h2>Update & Delete</h2>
+    <input type="number" id="upNum" placeholder="Room Number">
+    <input type="number" id="upPrice" placeholder="New Price">
+    <button onclick="send(`/api/rooms/${val('upNum')}/price`, `price=${val('upPrice')}`, 'PUT')">8. Update Price</button>
+    <button onclick="send(`/api/rooms/${val('upNum')}/status`, `available=true`, 'PUT')">9. Set Available</button>
+    <button onclick="send(`/api/rooms/${val('upNum')}`, '', 'DELETE')" style="background: #ea4335; margin-top:5px;">7. Delete Room</button>
+</div>
+<div class="card">
+    <h2>View Data</h2>
+    <button onclick="get('/api/rooms')">View All Rooms</button>
+    <button onclick="get('/api/guests')" style="margin-top:5px; background: #34a853;">View All Guests</button>
+    <button onclick="get('/api/bookings')" style="margin-top:5px; background: #fbbc05;">View All Bookings</button>
+</div>
+
+<div style="grid-column: span 2;" class="card">
+    <h2>Output Console</h2>
+    <pre id="output">Waiting for action...</pre>
+</div>
+
+<script>
+    const val = id => document.getElementById(id).value;
+    const out = data => document.getElementById('output').innerText = JSON.stringify(data, null, 2);
+
+    function get(url) {
+        fetch(url).then(r => r.json()).then(out).catch(e => out("Error or Empty"));
+    }
+
+    function send(url, params, method) {
+        fetch(url + (params ? '?' + params : ''), { method: method })
+            .then(r => r.text()).then(t => document.getElementById('output').innerText = t);
+    }
+</script>
+
+</body>
+</html>
