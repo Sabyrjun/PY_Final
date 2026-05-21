@@ -86,9 +86,6 @@ class HotelSystem:
     def sort_rooms(self):
         return sorted(self.data["rooms"], key=lambda x: x["price"])
 
-    def delete_room(self, number):
-        self.data["rooms"] = [r for r in self.data["rooms"] if r["number"] != number]
-        self.save_data()
 
     def update_price(self, number, new_price):
         room = self.find_room(number)
