@@ -59,8 +59,7 @@ def main():
                 num = int(input("Введите номер комнаты: "))
                 if sub == "1":
                     p = float(input("Новая цена: ")); system.update_price(num, p)
-                elif sub == "2": system.delete_room(num)
-                elif sub == "3": system.update_status(num, True)
+                elif sub == "2": system.update_status(num, True)
                 print("✅ Успешно выполнено!")
             except ValueError: print("❌ Ошибка ввода!")
 

@@ -63,15 +63,6 @@ def filter_rooms():
     return jsonify(system.filter_rooms(request.args.get('type', '')))
 
 
-@app.route('/api/rooms/<int:number>', methods=['GET', 'DELETE'])
-def manage_room(number):
-    if request.method == 'DELETE':
-        system.delete_room(number)
-        return "✅ Room deleted."
-    room = system.find_room(number)
-    return jsonify(room) if room else jsonify({"error": "Not found"}), 404
-
-
 @app.route('/api/rooms/<int:number>/price', methods=['PUT'])
 def update_price(number):
     new_price = float(request.args.get('price', 0))
