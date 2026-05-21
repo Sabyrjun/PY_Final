@@ -52,7 +52,6 @@
     <input type="number" id="upPrice" placeholder="New Price">
     <button onclick="send(`/api/rooms/${val('upNum')}/price`, `price=${val('upPrice')}`, 'PUT')">8. Update Price</button>
     <button onclick="send(`/api/rooms/${val('upNum')}/status`, `available=true`, 'PUT')">9. Set Available</button>
-    <button onclick="send(`/api/rooms/${val('upNum')}`, '', 'DELETE')" style="background: #ea4335; margin-top:5px;">7. Delete Room</button>
 </div>
 <div class="card">
     <h2>View Data</h2>
